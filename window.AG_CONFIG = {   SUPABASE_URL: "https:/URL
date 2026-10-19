@@ -1,0 +1,4 @@
+window.AG_CONFIG = {
+  SUPABASE_URL: "https://আপনার-প্রজেক্ট.supabase.co",
+  SUPABASE_KEY: "sb_publishable_আপনার-কী"
+};
