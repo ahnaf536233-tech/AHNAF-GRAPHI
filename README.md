@@ -1,87 +1,56 @@
-# AHNAF GRAPHI Website
+# AHNAF GRAPHI – ওয়েবসাইট (আহনাফ গ্রাফি)
 
-A bilingual (English / Bangla) static website for a graphic design business. Plain HTML, CSS and JavaScript. No build tools, no paid libraries, no external APIs.
+গ্রাফিক ডিজাইন সার্ভিস মার্কেটপ্লেস। HTML + CSS + Vanilla JS, কোনো সার্ভার বা বিল্ড টুল লাগে না।
 
-## Files
+## ১. ফাইল কাঠামো
+`index.html`, `style.css`, `script.js`, `assets/` (লোগো, ফেভিকন, প্লেসহোল্ডার), `.nojekyll`। সব পাথ রিলেটিভ, তাই `https://USERNAME.github.io/REPO/` প্রজেক্ট URL-এ চলবে।
 
-| File | Purpose |
-|---|---|
-| `index.html` | Page structure and SEO metadata |
-| `style.css` | Design (brand colours are variables at the top) |
-| `script.js` | Settings, English/Bangla text, gallery filters, pricing, order form, WhatsApp |
-| `README.md` | This guide |
-
-## 1. Change your settings (top of `script.js`)
-
+## ২. হোয়াটসঅ্যাপ নম্বর ও ব্র্যান্ডের তথ্য বদলানো
+`script.js`-এর শুরুতে `CONFIG` অংশ খুলুন:
 ```js
-const CONFIG = {
-  WHATSAPP_NUMBER: "8801890042863",   // <-- your number
-  EMAIL: "hello@example.com",
-  LOCATION: { en: "Bangladesh", bn: "বাংলাদেশ" },
-  CURRENCY: "৳"
-};
+WHATSAPP_NUMBER: "8801890042863"  // + ছাড়া, দেশের কোডসহ
 ```
+ফাঁকা রাখলে হোয়াটসঅ্যাপ অর্ডার বন্ধ থাকবে ও বার্তা দেখাবে। নীতিমালা, ঠিকানা ও ইমেইলের `[প্লেসহোল্ডার]` লেখাগুলো `index.html`-এ খুঁজে নিজের তথ্য বসান।
 
-- **WhatsApp number:** country code plus number, digits only. No `+`, spaces or dashes. Example: `8801712345678`.
-- Until you set a real number, the WhatsApp buttons still open WhatsApp, but you must pick the recipient yourself.
+## ৩. সার্ভিস যোগ / এডিট / ডিলিট
+ওয়েবসাইটের মেনুতে **অ্যাডমিন** → (প্রথমবার পাসকোড ঠিক করুন) → **সার্ভিস** ট্যাব।
+- **+ নতুন সার্ভিস**: নাম, ক্যাটেগরি, দাম, ঐচ্ছিক ছাড়ের দাম, বিবরণ, ছবি (URL বা আপলোড), ফিচার্ড/সক্রিয় নির্বাচন করে সংরক্ষণ।
+- **এডিট**: বদলালে পাবলিক ক্যাটালগ সাথে সাথে বদলায়। এডিট করলে "নমুনা" চিহ্ন উঠে যায়।
+- **ডিলিট**: সবসময় নিশ্চিতকরণ চায়।
+- ক্যাটেগরি যোগ, নাম বদল ও ডিলিট **ক্যাটেগরি** ট্যাবে।
+প্রথমে থাকা ৮টি সার্ভিস ও দাম **নমুনা**; আসল সার্ভিস যোগ করে সেগুলো ডিলিট করুন।
 
-### Edit prices
+## ৪. ব্যাকআপ ও রিস্টোর
+**অ্যাডমিন → ডেটা ও ব্যাকআপ**: সার্ভিস JSON এক্সপোর্ট/ইমপোর্ট, পূর্ণ ব্যাকআপ/রিস্টোর (সার্ভিস, ক্যাটেগরি, অর্ডার)। অর্ডার CSV এক্সপোর্ট **অর্ডার** ট্যাবে। সপ্তাহে অন্তত একবার ব্যাকআপ নিন এবং ফাইল গুগল ড্রাইভ বা পেনড্রাইভে রাখুন।
 
-Change the `amount` values in the `PRICES` array in `script.js`.
+## ৫. GitHub-এ আপলোড (আপনার বিদ্যমান রিপোজিটরি)
+1. GitHub-এ রিপোজিটরি খুলুন → **Add file → Upload files**।
+2. এই ফোল্ডারের ভেতরের সব ফাইল (`index.html`, `style.css`, `script.js`, `README.md`, `assets` ফোল্ডার, `.nojekyll`) টেনে এনে ছাড়ুন। একই নামের পুরনো ফাইল প্রতিস্থাপিত হবে। (আগের ওয়েবসাইটের কনটেন্ট রাখতে চাইলে আগে সেটির ব্যাকআপ নিন।)
+3. **Commit changes** চাপুন।
 
-### Replace portfolio images
+## ৬. GitHub Pages আপডেট
+1. রিপোজিটরির **Settings → Pages**।
+2. Source: **Deploy from a branch**, Branch: `main` / `(root)` → Save।
+3. ১–২ মিনিট পর লিংক খুলুন। পরে ফাইল বদলে Commit করলেই সাইট আপডেট হবে (না হলে `Ctrl+F5`)।
 
-1. Create a folder named `images` next to `index.html`.
-2. Add your designs (JPG, PNG or WebP, around 800x600 px, under 200 KB each for fast loading).
-3. In the `PORTFOLIO` array, set `img: "images/your-file.jpg"`. Leave it as `""` to keep the placeholder.
-4. Add or remove entries freely. Valid `cat` values: `logo`, `banner`, `poster`, `social`, `book`, `nikah`, `islamic`.
+## ৭. localStorage ও নিরাপত্তার সীমাবদ্ধতা (গুরুত্বপূর্ণ)
+- সার্ভিস, ক্যাটেগরি, কার্ট ও অর্ডার শুধু **ওই ব্রাউজারেই** জমা থাকে। অন্য ফোন/কম্পিউটারে অ্যাডমিনে দেখা যাবে না। কোনো অনলাইন শেয়ারড ডেটাবেস **নেই**।
+- ব্রাউজারের ডেটা মুছলে বা ইনকগনিটো মোডে সব হারাতে পারে।
+- **গ্রাহকের ব্রাউজারে সংরক্ষিত অর্ডার আপনি দেখতে পাবেন না।** আপনি অর্ডার পান শুধু যখন গ্রাহক হোয়াটসঅ্যাপ খুলে মেসেজ নিজে Send করেন। তাই অ্যাডমিনের "অর্ডার হিস্টোরি" মূলত আপনি নিজে (বা নিজের ডিভাইসে) যা রেকর্ড করেন তার জন্য।
+- আপলোড করা ছবি ব্রাউজারে (প্রায় ৫MB সীমা) জমা হয়; তাই ছোট করা হয়। বেশি ছবি হলে URL ব্যবহার করুন এবং ছবির আলাদা ব্যাকআপ রাখুন।
+- **অ্যাডমিন পাসকোড কেবল সুবিধার জন্য, প্রকৃত নিরাপত্তা নয়।** GitHub Pages-এ সব সোর্স কোড জনসমক্ষে খোলা; যে কেউ ডেভেলপার টুলে লোকাল ডেটা দেখতে বা বদলাতে পারে। কোনো আসল পাসওয়ার্ড বা গোপন কী কোডে রাখা হয়নি। পেমেন্ট বা সংবেদনশীল তথ্য সংরক্ষণ করা হয় না।
+- ভবিষ্যতে প্রকৃত নিরাপত্তা ও শেয়ারড ডেটার জন্য: ব্যাকএন্ড (যেমন Firebase বা Supabase) + সার্ভার-সাইড লগইন (Authentication) + ডেটাবেস নিয়ম (Security Rules) যোগ করতে হবে।
 
-### Edit text
+## ৮. ডেপ্লয়ের পর টেস্ট চেকলিস্ট
+- [ ] সাইট প্রজেক্ট URL-এ খুলছে, লোগো/ছবি আসছে
+- [ ] ফোনে মেনু, সার্চ, ক্যাটেগরি ফিল্টার ও সর্ট কাজ করছে
+- [ ] কার্টে যোগ/পরিমাণ বদল/সরানো, মোট ঠিক
+- [ ] ভুল নম্বর দিলে চেকআউট ত্রুটি দেখায়; সঠিক নম্বরে অর্ডার সংরক্ষিত হয়
+- [ ] "হোয়াটসঅ্যাপে পাঠান" সঠিক নম্বরে বাংলা মেসেজসহ খোলে
+- [ ] অ্যাডমিনে সার্ভিস যোগ/এডিট/ডিলিট (নিশ্চিতকরণসহ) ও পাবলিক পেজে প্রতিফলন
+- [ ] অর্ডার স্ট্যাটাস বদল, CSV এক্সপোর্ট, JSON এক্সপোর্ট/ইমপোর্ট ও রিস্টোর
+- [ ] রিফ্রেশের পর ডেটা থাকে
+- [ ] নমুনা সার্ভিস ডিলিট করে আসল সার্ভিস ও নীতিমালার প্লেসহোল্ডার পূরণ করা হয়েছে
 
-All visible text, in both languages, is in the `T` object in `script.js` (`en` and `bn`). Edit both versions together.
-
-### SEO
-
-In `index.html`, replace `https://YOUR-USERNAME.github.io/YOUR-REPO/` (appears in `canonical` and `og:url`) with your real site address once you know it.
-
-## 2. What needs a backend (not included)
-
-This is a static site. It has **no server and no database**.
-
-- The order form **does not save or send orders by itself.** It checks the fields, builds a message and opens WhatsApp. The customer must press Send in WhatsApp.
-- Not available without a backend or third-party service: storing orders, order history, email notifications, file uploads from customers, online payments, a login or admin panel.
-- "Editable prices" means you edit `script.js`. There is no admin page.
-- The language choice is remembered in the visitor's own browser only.
-
-## 3. Test on your computer
-
-1. Put all four files in one folder (for example `ahnaf-graphi`).
-2. Double-click `index.html` to open it in your browser.
-3. Check:
-   - Every menu link scrolls to its section; the menu button works on a narrow window.
-   - The language button switches the whole page between English and Bangla.
-   - The portfolio filters show and hide items.
-   - "Order this" on a price card pre-selects the service in the form.
-   - Submit the empty form: errors appear. Fill it in correctly: WhatsApp opens with your message.
-   - Resize the window, or use browser device mode (F12), to test tablet and mobile widths.
-   - Press Tab to confirm keyboard focus is visible.
-4. Optional: for a Lighthouse check, open Chrome DevTools > Lighthouse.
-
-## 4. Publish free with GitHub Pages
-
-1. Create a free account at github.com.
-2. Click **New repository**. Name it, for example, `ahnaf-graphi`. Choose **Public**. Click **Create repository**.
-3. Click **uploading an existing file**. Drag in `index.html`, `style.css`, `script.js`, `README.md` (and your `images` folder). Click **Commit changes**.
-4. Go to **Settings > Pages**.
-5. Under **Build and deployment**, set **Source** to **Deploy from a branch**. Choose branch **main** and folder **/ (root)**. Click **Save**.
-6. Wait one to two minutes. Your site appears at `https://YOUR-USERNAME.github.io/ahnaf-graphi/`.
-7. Update the canonical and `og:url` addresses in `index.html` (see SEO above), then commit again.
-
-To update later, open a file on GitHub, click the pencil icon, edit and commit. The site refreshes in a minute or two.
-
-A custom domain is optional and costs money to register. GitHub Pages hosting itself is free.
-
-## Notes
-
-- Quran verses: use verified Arabic text from a trusted source and double-check it before design and printing.
-- Fonts use the visitor's system fonts for speed. Bangla and Arabic display well on modern phones and computers.
+## ৯. যা প্লেসহোল্ডার
+রিভিউ (খালি অবস্থা), পোর্টফোলিও ছবি (ডেমো), রিভিশন/রিফান্ড/শর্তাবলি, ঠিকানা/ইমেইল। এগুলো আপনি পূরণ না করা পর্যন্ত স্পষ্টভাবে "প্লেসহোল্ডার" চিহ্নিত।
