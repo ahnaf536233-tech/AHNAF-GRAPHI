@@ -1,0 +1,4 @@
+Supabase → Authentication → URL Configuration:
+Site URL: https://ahnaf536233-tech.github.io/AHNAF-GRAPHI/
+Redirect URLs: https://ahnaf536233-tech.github.io/AHNAF-GRAPHI/admin/
+Edge Function-এর ALLOWED_ORIGINS: https://ahnaf536233-tech.github.io (পাথ ও শেষের / ছাড়া)
