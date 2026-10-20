@@ -1,8 +1,23 @@
 'use strict';
-const C = window.AG_CONFIG || {}, $ = s => document.querySelector(s);
+const $ = s => document.querySelector(s);
+const saved = (() => { try { return JSON.parse(localStorage.getItem('ag_cfg')) || {}; } catch { return {}; } })();
+const C = (window.AG_CONFIG && window.AG_CONFIG.SUPABASE_URL && window.AG_CONFIG.SUPABASE_KEY) ? window.AG_CONFIG : saved;
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const msg = (t, e) => { const d = document.createElement('div'); d.className = 'm' + (e ? ' e' : ''); d.textContent = t; $('#msg').append(d); setTimeout(() => d.remove(), 4000); };
-if (!C.SUPABASE_URL || !C.SUPABASE_KEY) { $('#app').innerHTML = '<div class="box err">config.js-এ SUPABASE_URL ও SUPABASE_KEY এখনো বসানো হয়নি।</div>'; throw new Error('no config'); }
+function badKey(k) {
+  if (/^sb_secret_/.test(k)) return true;
+  if (k.startsWith('eyJ')) { try { return JSON.parse(atob(k.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))).role === 'service_role'; } catch { return true; } }
+  return !k.startsWith('sb_publishable_');
+}
+function setupView() {
+  $('#app').innerHTML = `<form class="box" id="cf" style="max-width:520px;margin:30px auto"><h2>প্রথমবার সংযোগ</h2><p>Supabase → Project Settings → API থেকে দুটি মান পেস্ট করুন। (শুধু পাবলিক মান; <b>secret/service_role কী নয়</b>)</p>
+  <label>Project URL<input name="u" placeholder="https://xxxx.supabase.co" required></label><label>Publishable key<input name="k" placeholder="sb_publishable_..." required></label><p class="err" id="ce"></p><button class="btn">সংরক্ষণ</button></form>`;
+  $('#cf').onsubmit = e => { e.preventDefault(); const u = e.target.u.value.trim().replace(/\/$/, ''), k = e.target.k.value.trim();
+    if (!/^https:\/\/[a-z0-9-]+\.supabase\.co$/.test(u)) { $('#ce').textContent = 'URL সঠিক নয়। এটি https://xxxx.supabase.co ধরনের হতে হবে (GitHub লিংক নয়)।'; return; }
+    if (badKey(k)) { $('#ce').textContent = 'এটি publishable key নয়। secret/service_role কী এখানে দেবেন না।'; return; }
+    localStorage.setItem('ag_cfg', JSON.stringify({SUPABASE_URL: u, SUPABASE_KEY: k})); location.reload(); };
+}
+if (!C.SUPABASE_URL || !C.SUPABASE_KEY) { setupView(); throw new Error('setup needed'); }
 const sb = supabase.createClient(C.SUPABASE_URL, C.SUPABASE_KEY);
 const STATUS = ['Pending', 'In Progress', 'Completed', 'Cancelled'];
 const T = {
@@ -23,7 +38,8 @@ async function boot() {
 function loginView(err) {
   $('#out').hidden = true; $('#who').textContent = '';
   $('#app').innerHTML = `<form class="box" id="lf" style="max-width:380px;margin:40px auto"><h2>অ্যাডমিন লগইন</h2><label>ইমেইল<input name="e" type="email" required autocomplete="username"></label>
-  <label>পাসওয়ার্ড<input name="p" type="password" required autocomplete="current-password"></label><p class="err">${esc(err || '')}</p><button class="btn">লগইন</button></form>`;
+  <label>পাসওয়ার্ড<input name="p" type="password" required autocomplete="current-password"></label><p class="err">${esc(err || '')}</p><button class="btn">লগইন</button> <button type="button" class="btn sm" id="rc">সংযোগ বদলান</button></form>`;
+  $('#rc').onclick = () => { localStorage.removeItem('ag_cfg'); location.reload(); };
   $('#lf').onsubmit = async ev => { ev.preventDefault(); const b = ev.target.querySelector('button'); b.disabled = true; b.textContent = 'অপেক্ষা করুন…';
     const {error} = await sb.auth.signInWithPassword({email: ev.target.e.value.trim(), password: ev.target.p.value});
     if (error) { loginView('ইমেইল বা পাসওয়ার্ড ভুল।'); return; } boot(); };
